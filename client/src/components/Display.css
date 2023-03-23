@@ -34,10 +34,9 @@
   display: block;
   margin: auto;
   height: 30px;
-  width: 330px;
+  width: 50%;
   text-align: center;
+  width: auto;
 }
 
-input[type="text"]:focus {
-  background-color: lightblue;
-}
+
