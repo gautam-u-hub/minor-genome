@@ -42,13 +42,13 @@ const Display = ({ contract, account }) => {
   };
   return (
     <>
-      <div className="image-list">{data}</div>
-      <input
-        type="text"
+      <div className="image-list" >{data}</div>
+      <input 
+        type="text" 
         placeholder="Enter Address"
-        className="address"
+        className="address"  class="container form-control bg-transparent" 
       ></input>
-      <button className="center button" onClick={getdata}>
+      <button className="center button" class="btn btn-outline-dark py-3 px-5 mt-2" style={{marginLeft:"3cm"}} onClick={getdata}>
         Get Data
       </button>
     </>

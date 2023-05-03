@@ -2,10 +2,65 @@ import { useState } from "react";
 import axios from "axios";
 import "./FileUpload.css";
 import FormData from 'form-data'
+import "./inputs/Navbar_herostart"
+import { ethers } from "ethers";
+import { useEffect } from "react";
+import Upload from "../artifacts/contracts/Upload.sol/Upload.json";
+import Navbar_herostart from "./inputs/Navbar_herostart";
+import Display from "../components/Display";
+import Footer from "./inputs/Footer";
+function App() {
+  const [account, setAccount] = useState("");
+  const [contract, setContract] = useState(null);
+  const [provider, setProvider] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const loadProvider = async () => {
+      if (provider) {
+        window.ethereum.on("chainChanged", () => {
+          window.location.reload();
+        });
+
+        window.ethereum.on("accountsChanged", () => {
+          window.location.reload();
+        });
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setAccount(address);
+        let contractAddress = "0x5EA063d0A19B7182BBD1F5F08a3Eb8858cb1Fb01";
+
+        const contract = new ethers.Contract(
+          contractAddress,
+          Upload.abi,
+          signer
+        );
+        //console.log(contract);
+        setContract(contract);
+        setProvider(provider);
+      } else {
+        console.error("Metamask is not installed");
+      }
+    };
+    provider && loadProvider();
+  }, []);
+  //   
+}
+
+
+
+
+
+
+
 
 //import fs from 'fs'
 const FileUpload = ({ contract, account, provider }) => {
-   const [sourceModifierTableFile, setSourceModifierTableFile] = useState(null);
+  const [sourceModifierTableFile, setSourceModifierTableFile] = useState(null);
   const [visibility, setVisibility] = useState('public');
   const [submissionCategory, setSubmissionCategory] = useState('sequenced by submitter');
   const [submissionReleaseDate, setSubmissionReleaseDate] = useState('');
@@ -15,6 +70,8 @@ const FileUpload = ({ contract, account, provider }) => {
   const [sequenceAuthors, setSequenceAuthors] = useState({ firstName: "", lastName: "" });
   const [publicationStatus, setPublicationStatus] = useState({ referenceTitle: "", status: "" });
   const [contact, setContact] = useState({ firstName: "", lastName: "", email: "" });
+  const [option, setOption] = useState('option1');
+
 
 
   const handleubmit = (event) => {
@@ -32,50 +89,50 @@ const FileUpload = ({ contract, account, provider }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (file1) {
-   
 
-              const JWT = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJjMzYxZmI3NC0wYmMwLTRmYmUtYjVlNi1mMThmMjVhZGNlMzciLCJlbWFpbCI6ImdhdXRhbTM0NTYzQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfSx7ImlkIjoiTllDMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI2OThmMzFiNzM1ZDIyNjllYWEwZiIsInNjb3BlZEtleVNlY3JldCI6ImRiYTU0NWNiMDE4ZWU1ZDZjOGViYzYzNmMxNmVmMWQ5NzlkMDFiZTVkMWM2ODI2ZTFkNzZiMWVlMGRlYzNiMzIiLCJpYXQiOjE2Nzc1NDYyNDl9.G2lX8OeZTtm0ZR9LrN31TBKWLqng0denA3TVg-17_5Q'
 
-         
-              const formData = new FormData();
-              const src = file1;
-              
-              //const file = fs.createReadStream(src)
-              formData.append('file', src)
-              
-              const metadata = JSON.stringify({
-                name: fileName,
-              });
-              formData.append('pinataMetadata', metadata);
-              
-              const options = JSON.stringify({
-                cidVersion: 0,
-              })
-              formData.append('pinataOptions', options);
-              console.log(formData);
-              try{
-                const resFile = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
-                  maxBodyLength: "Infinity",
-                  headers: {
-                    'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-                    Authorization: JWT
-                  }
-                });
-                console.log(resFile.data);
-                const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-                const signer = contract.connect(provider.getSigner());
-                signer.add(account, ImgHash);
-                alert("Successfully Image Uploaded");
-              } catch (error) {
-                console.log(error);
-              }
+      const JWT = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJjMzYxZmI3NC0wYmMwLTRmYmUtYjVlNi1mMThmMjVhZGNlMzciLCJlbWFpbCI6ImdhdXRhbTM0NTYzQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfSx7ImlkIjoiTllDMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI2OThmMzFiNzM1ZDIyNjllYWEwZiIsInNjb3BlZEtleVNlY3JldCI6ImRiYTU0NWNiMDE4ZWU1ZDZjOGViYzYzNmMxNmVmMWQ5NzlkMDFiZTVkMWM2ODI2ZTFkNzZiMWVlMGRlYzNiMzIiLCJpYXQiOjE2Nzc1NDYyNDl9.G2lX8OeZTtm0ZR9LrN31TBKWLqng0denA3TVg-17_5Q'
 
-          
-            
-          
+
+      const formData = new FormData();
+      const src = file1;
+
+      //const file = fs.createReadStream(src)
+      formData.append('file', src)
+
+      const metadata = JSON.stringify({
+        name: fileName,
+      });
+      formData.append('pinataMetadata', metadata);
+
+      const options = JSON.stringify({
+        cidVersion: 0,
+      })
+      formData.append('pinataOptions', options);
+      console.log(formData);
+      try {
+        const resFile = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+          maxBodyLength: "Infinity",
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            Authorization: JWT
+          }
+        });
+        console.log(resFile.data);
+        const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
+        const signer = contract.connect(provider.getSigner());
+        signer.add(account, ImgHash);
+        alert("Successfully Image Uploaded");
+      } catch (error) {
+        console.log(error);
+      }
+
+
+
+
 
     }
-    
+
     setFileName("No image selected");
     setFile(null);
   };
@@ -90,131 +147,210 @@ const FileUpload = ({ contract, account, provider }) => {
     setFileName(e.target.files[0].name);
     e.preventDefault();
   };
+  const handleOptionChange = (event) => {
+    setOption(event.target.value);
+  };
   return (
-    <div className="top">
-      <form className="form" onSubmit={handleSubmit}>
-        <label htmlFor="file-upload" className="choose">
-          Choose File
-        </label>
-        <input
-          disabled={!account}
-          type="file"
-          id="file-upload"
-          name="data"
-          onChange={retrieveFile}
-        />
-        <span className="textArea">Image: {fileName}</span>
-        <button type="submit" className="upload" disabled={!file1}>
-          Upload File
-        </button>
-      </form>
-      <form onSubmit={handleubmit}>
 
-      <div>
-        <label htmlFor="visibility">Visibility</label>
-        <select id="visibility" value={visibility} onChange={(event) => setVisibility(event.target.value)}>
-          <option value="public">Public</option>
-          <option value="private">Private</option>
-        </select>
-      </div>
-      <div>
-        <label>Submission category</label>
-        <div>
-          <label htmlFor="sequencedBySubmitter">
-            <input type="radio" id="sequencedBySubmitter" name="submissionCategory" value="sequenced by submitter" checked={submissionCategory === 'sequenced by submitter'} onChange={(event) => setSubmissionCategory(event.target.value)} />
-            Sequenced by submitter
-          </label>
+
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s"> 
+      <div class="container">
+        <div class="booking p-5">
+          <div class="row g-5 align-items-center">
+            <div class="col-md-6 text-white" style={{marginLeft:"6.5cm"}}>
+            <h6 class="text-white text-uppercase">Enter Genomic Sequence</h6>
+            <div>
+              <div>
+              <div class="container-fluid position-relative p-0">
+              
+        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+       
+                <label htmlFor="option">Select an option:</label>
+                <select id="option" class="btn btn-outline-light bg-light w-100 py-3" name="option" value={option} onChange={handleOptionChange}>
+                  <option value="visibility">visibility</option>
+                 <option value="submission category">submission category</option>
+                  <option value="submission release date">submission release date</option>
+                  <option value="sequenceMoleculeType">sequence Molecule Type</option>
+                  <option value="sequencingTechnology">sequencingTechnology</option>
+                  <option value="Research definition">Research definition</option>
+                  <option value="Sequence authors">Sequence authors</option>
+                  <option value="Publication status">Publication status</option>
+                  <option value="Contact">Contact</option>
+                
+                </select>
+                </nav>
+              
+              </div>
+              </div>
+              
+
+              <div className="row g-3">
+                <div className="top">
+
+                  <form className="form" onSubmit={handleSubmit}>
+                    <label htmlFor="file-upload" className="choose" class="btn btn-outline-light w-100 py-3">
+
+                      Choose File
+                    </label>
+                    <input
+                      disabled={!account}
+                      type="file"
+                      id="file-upload"
+                      name="data"
+                      onChange={retrieveFile}
+                    />
+                    <span className="textArea"class="text-light">Image: {fileName}</span>
+                    <button type="submit" className="upload" disabled={!file1} class="btn btn-outline-light py-3 px-5 mt-2" >
+                      Upload File
+                    </button>
+                  </form>
+                  <form onSubmit={handleubmit}>
+                    {option === 'visibility' && (
+                      <div>
+                        <label htmlFor="visibility">Visibility</label>
+                        <select class="form-control bg-transparent" id="visibility" value={visibility} onChange={(event) => setVisibility(event.target.value)}>
+                          <option value  ="public">Public</option>
+                          <option value="private">Private</option>
+                        </select>
+                      </div>
+                    )}
+                    {option === 'submission category' && (
+                      <div>
+                           <div class="col-md-6">
+                          
+                        <label>Submission category</label>
+                        <div>
+                          <label htmlFor="sequencedBySubmitter">
+                            <input type="radio" id="sequencedBySubmitter" name="submissionCategory" value="sequenced by submitter" checked={submissionCategory === 'sequenced by submitter'} onChange={(event) => setSubmissionCategory(event.target.value)} />
+                            Sequenced by submitter
+                          </label>
+                        </div>
+                        <div>
+                          <label htmlFor="derivedFromOtherData">
+                            <input type="radio" id="derivedFromOtherData" name="submissionCategory" value="derived from other data" checked={submissionCategory === 'derived from other data'} onChange={(event) => setSubmissionCategory(event.target.value)} />
+                            Derived from other data
+                          </label>
+                        </div>
+                      </div>
+                      </div>
+                      
+
+                    )}
+
+
+                    {option === 'submission release date' && (
+                      <div>
+                         <div class="col-md-6">
+                         
+                        <label  class="form-control bg-transparent"htmlFor="submissionReleaseDate">Submission release date</label>
+                        <input type="date" id="submissionReleaseDate" value={submissionReleaseDate} onChange={(event) => setSubmissionReleaseDate(event.target.value)} />
+                        </div>
+                        
+                      </div>)}
+
+                    {option === 'sequenceMoleculeType' && (
+                      <div>
+                        <div class="col-md-6">
+                         
+                            <div class="form-control bg-transparent">
+                          <label class="form-control bg-transparent" htmlFor="sequenceMoleculeType">Sequence (molecule type, topology)</label>
+                          <input type="text" id="sequenceMoleculeType"class="form-control bg-transparent" value={sequenceMoleculeType} onChange={(event) => setSequenceMoleculeType(event.target.value)} />
+                          </div>
+                          </div>
+                        
+                      </div>
+
+                    )}
+
+                    {option === 'sequencingTechnology' && (
+                      <div>
+                        <label class="form-control bg-transparent" htmlFor="sequencingTechnology">Sequencing technology</label>
+                        <input type="text" class="form-control bg-transparent" id="sequencingTechnology" value={sequencingTechnology} onChange={(event) => setSequencingTechnology(event.target.value)} />
+                      </div>
+                    )}
+
+                    {option == ' Research definition' && (
+                      <label>
+                        Research definition
+                        <input type="text" class="form-control bg-transparent" value={researchDefinition} onChange={(event) => setResearchDefinition(event.target.value)} />
+                      </label>
+                    )}
+                    {option == 'Sequence authors' && (
+                      <label>
+                        Sequence authors (first name, last name)
+                        <input
+                          type="text" class="form-control bg-transparent"
+                          value={sequenceAuthors.firstName}
+                          onChange={(event) => setSequenceAuthors((prevState) => ({ ...prevState, firstName: event.target.value }))}
+                          placeholder="First Name"
+                        />
+                        <input
+                          type="text"class="form-control bg-transparent"
+                          value={sequenceAuthors.lastName}
+                          onChange={(event) => setSequenceAuthors((prevState) => ({ ...prevState, lastName: event.target.value }))}
+                          placeholder="Last Name"
+                        />
+                      </label>
+                    )}
+                    {option == 'Publication status' && (
+                      <label>
+                        Publication status (reference title, status)
+                        <input
+                          type="text" class="form-control bg-transparent"
+                          value={publicationStatus.referenceTitle}
+                          onChange={(event) =>
+                            setPublicationStatus((prevState) => ({ ...prevState, referenceTitle: event.target.value }))
+                          }
+                          placeholder="Reference Title"
+                        />
+                        <input
+                          type="text" class="form-control bg-transparent"
+                          value={publicationStatus.status}
+                          onChange={(event) => setPublicationStatus((prevState) => ({ ...prevState, status: event.target.value }))}
+                          placeholder="Status"
+                        />
+                      </label>)}
+                    {option == 'Contact' && (
+                      <label>
+                        Contact (first name, last name, email)
+                        <input
+                          type="text" class="form-control bg-transparent"
+                          value={contact.firstName}
+                          onChange={(event) => setContact((prevState) => ({ ...prevState, firstName: event.target.value }))}
+                          placeholder="First Name"
+                        />
+                        <input
+                          type="text" class="form-control bg-transparent"
+                          value={contact.lastName}
+                          onChange={(event) => setContact((prevState) => ({ ...prevState, lastName: event.target.value }))}
+                          placeholder="Last Name"
+                        />
+                        <input
+                          type="text" class="form-control bg-transparent"
+                          value={contact.email}
+                          onChange={(event) => setContact((prevState) => ({ ...prevState, email: event.target.value }))}
+                          placeholder="Email"
+                        />
+                      </label>
+                    )}
+
+                    <button type="submit"class="btn btn-outline-light w-100 py-3" >Submit</button>
+
+
+
+
+
+                  </form>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <label htmlFor="derivedFromOtherData">
-            <input type="radio" id="derivedFromOtherData" name="submissionCategory" value="derived from other data" checked={submissionCategory === 'derived from other data'} onChange={(event) => setSubmissionCategory(event.target.value)} />
-            Derived from other data
-          </label>
-        </div>
       </div>
-      <div>
-        <label htmlFor="submissionReleaseDate">Submission release date</label>
-        <input type="date" id="submissionReleaseDate" value={submissionReleaseDate} onChange={(event) => setSubmissionReleaseDate(event.target.value)} />
       </div>
-      <div>
-        <label htmlFor="sequenceMoleculeType">Sequence (molecule type, topology)</label>
-        <input type="text" id="sequenceMoleculeType" value={sequenceMoleculeType} onChange={(event) => setSequenceMoleculeType(event.target.value)} />
       </div>
-      <div>
-        <label htmlFor="sequencingTechnology">Sequencing technology</label>
-        <input type="text" id="sequencingTechnology" value={sequencingTechnology} onChange={(event) => setSequencingTechnology(event.target.value)} />
-      </div>
-
-      <label>
-        Research definition
-        <input type="text" value={researchDefinition} onChange={(event) => setResearchDefinition(event.target.value)} />
-      </label>
-
-      <label>
-        Sequence authors (first name, last name)
-        <input
-          type="text"
-          value={sequenceAuthors.firstName}
-          onChange={(event) => setSequenceAuthors((prevState) => ({ ...prevState, firstName: event.target.value }))}
-          placeholder="First Name"
-        />
-        <input
-          type="text"
-          value={sequenceAuthors.lastName}
-          onChange={(event) => setSequenceAuthors((prevState) => ({ ...prevState, lastName: event.target.value }))}
-          placeholder="Last Name"
-        />
-      </label>
-
-      <label>
-        Publication status (reference title, status)
-        <input
-          type="text"
-          value={publicationStatus.referenceTitle}
-          onChange={(event) =>
-            setPublicationStatus((prevState) => ({ ...prevState, referenceTitle: event.target.value }))
-          }
-          placeholder="Reference Title"
-        />
-        <input
-          type="text"
-          value={publicationStatus.status}
-          onChange={(event) => setPublicationStatus((prevState) => ({ ...prevState, status: event.target.value }))}
-          placeholder="Status"
-        />
-      </label>
-
-      <label>
-        Contact (first name, last name, email)
-        <input
-          type="text"
-          value={contact.firstName}
-          onChange={(event) => setContact((prevState) => ({ ...prevState, firstName: event.target.value }))}
-          placeholder="First Name"
-        />
-        <input
-          type="text"
-          value={contact.lastName}
-          onChange={(event) => setContact((prevState) => ({ ...prevState, lastName: event.target.value }))}
-          placeholder="Last Name"
-        />
-        <input
-          type="text"
-          value={contact.email}
-          onChange={(event) => setContact((prevState) => ({ ...prevState, email: event.target.value }))}
-          placeholder="Email"
-        />
-      </label>
-
-      <button type="submit">Submit</button>
-
-
-
-
-      
-    </form>
-
-    </div>
+    
   );
 };
 export default FileUpload;

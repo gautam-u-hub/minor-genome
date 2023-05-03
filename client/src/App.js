@@ -5,16 +5,29 @@ import FileUpload from "./components/FileUpload";
 import Display from "./components/Display";
 import Modal from "./components/Modal";
 import "./App.css";
+import Submissioncategory from "./components/inputs/Submissioncategory";
+import Spinner from "./components/inputs/Spinner";
+import Navbar_herostart from "./components/inputs/Navbar_herostart";
+import About from "./components/inputs/About";
+import Footer from "./components/inputs/Footer";
+import Service from "./components/inputs/Service"
+import Booking from "./components/inputs/Booking";
+import "./css/style.css"
+import "./css/bootstrap.min.css"
+import { BrowserRouter as Router, Routes, BrowserRouter ,Route,useLocation,useNavigate,Switch} from 'react-router-dom';
+
+
+
 
 function App() {
   const [account, setAccount] = useState("");
   const [contract, setContract] = useState(null);
   const [provider, setProvider] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
+  
   useEffect(() => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-
+    
     const loadProvider = async () => {
       if (provider) {
         window.ethereum.on("chainChanged", () => {
@@ -46,22 +59,25 @@ function App() {
   }, []);
   return (
     <>
-      {!modalOpen && (
-        <button className="share" onClick={() => setModalOpen(true)}>
-          Share
-        </button>
-      )}
-      {modalOpen && (
-        <Modal setModalOpen={setModalOpen} contract={contract}></Modal>
-      )}
+ 
 
-      <div className="App">
-        <h1 style={{ color: "black" }}>Store And Share Sequence Using Blockchain</h1>
-        <div class="bg"></div>
-        <div class="bg bg2"></div>
-        <div class="bg bg3"></div>
+    
+    
 
-        <p style={{ color: "black" }}>
+     
+          <Router>
+       
+          
+        <Switch>
+          
+        <Route exact path="/">
+        
+          {/* <Spinner></Spinner> */}
+          <Navbar_herostart></Navbar_herostart>
+          <About></About>
+         
+
+          {/* <p style={{ color: "black" }}>
           Account : {account ? account : "Not connected"}
         </p>
         <FileUpload
@@ -69,8 +85,48 @@ function App() {
           provider={provider}
           contract={contract}
         ></FileUpload>
-        <Display contract={contract} account={account}></Display>
-      </div>
+        <Display contract={contract} account={account}></Display>   */}
+        {/* <Submissioncategory></Submissioncategory> */}
+        <Service></Service>
+        
+        
+        
+       <Footer></Footer>
+
+      
+       
+      
+    
+       </Route>
+        
+     
+       
+        <Route exact path="/FileUpload" >
+               <Navbar_herostart></Navbar_herostart>
+               <FileUpload
+          account={account}
+          provider={provider}
+          contract={contract}
+        ></FileUpload>
+
+<Display contract={contract} account={account}></Display>
+
+{!modalOpen && (
+        <button className="share" class="btn btn-outline-dark py-3 px-5 mt-2"onClick={() => setModalOpen(true)}>
+          Share
+        </button>
+      )}
+      {modalOpen && (
+        <Modal setModalOpen={setModalOpen} contract={contract}></Modal>
+      )}
+
+<Footer></Footer>
+          </Route>
+        
+        
+        </Switch>
+        </Router>
+      
     </>
   );
 }
