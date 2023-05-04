@@ -34,18 +34,12 @@ function App() {
         <Route exact path="/" element={<Home />}></Route>
         <Route exact path="/Register" element={<Register />} />
         <Route exact path="/Login" element={<Login />} />
-
+        <Route exact path="/Random" element={<Navbar_herostart />}></Route>
         <Route element={<PersistLogin />}>
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
             <Route exact path="/Main" element={<Main />} />
             <Route exact path="/Get" element={<Display></Display>}></Route>
             <Route exact path="/Share" element={<Modal></Modal>}></Route>
-            <Route exact path="/Random" element={<Navbar_herostart />}>
-              {/* <About></About>
-              <Service></Service>
-
-              <Footer></Footer> */}
-            </Route>
           </Route>
           <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
             <Route exact path="/Users" element={<Users />} />

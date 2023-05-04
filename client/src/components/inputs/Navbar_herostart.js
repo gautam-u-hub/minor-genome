@@ -3,7 +3,16 @@ import { Link,useNavigate } from 'react-router-dom';
 import About from './About';
 import Service from './Service';
 import Footer from './Footer';
+import useLogout from "../hooks/useLogout";
 const Navbar_herostart = () => {
+
+    const logout = useLogout();
+    const navigate = useNavigate();
+
+    const signOut = async () => {
+      await logout();
+      navigate("/linkpage");
+    };
     return (
       <>
         <div class="container-fluid position-relative p-0">
@@ -23,8 +32,8 @@ const Navbar_herostart = () => {
               <div class="navbar-nav ms-auto py-0">
                 <div class="nav-item dropdown">
                   {/* <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a> */}
-                  <Link to="/FileUpload">Register</Link>
-
+                  <Link to="/Register">Register</Link>
+                  <button onClick={signOut}> logout</button>
                   <div class="dropdown-menu m-0"></div>
                 </div>
               </div>
