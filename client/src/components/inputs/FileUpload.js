@@ -78,10 +78,16 @@ const FileUpload = ({ contract, account, provider }) => {
     e.preventDefault();
     // Handle form submission here
     console.log({
+      visibility,
+      submissionCategory,
+      submissionReleaseDate,
+      sequenceMoleculeType,
+      sequencingTechnology,
       researchDefinition,
       sequenceAuthors,
-      publicationStatus,
       contact,
+      option
+
     });
 
         try {

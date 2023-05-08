@@ -16,8 +16,13 @@ const submissionSchema = new Schema({
         type: String,
     },
     researchDefinition: {
-        type:String,
+        type: String,
     },
+    contact: {
+        firstName: String,
+        email: String,
+        
+    }
     
 });
 

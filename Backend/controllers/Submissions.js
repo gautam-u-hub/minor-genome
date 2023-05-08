@@ -3,15 +3,20 @@ const Submission = require("../model/Submission");
 const submit = async(req,res) => {
     const {
       sequenceMoleculeType,
-      sequencingTechnology,
+        sequencingTechnology,
+        visibility,
+        researchDefinition,
+        submissionCategory,
+        contact
     } = req.body;
     try {
         const result = await Submission.create({
-            //"visibility": visibility,
-            //"submissionCategory": submissionCategory,
+            "visibility": visibility,
+            "submissionCategory": submissionCategory,
             "sequenceMoleculeType": sequenceMoleculeType,
             "sequencingTechnology": sequencingTechnology,
-            //"researchDefinition":sesearchDefinition,
+            "researchDefinition": researchDefinition,
+            "contact":contact
         });
         console.log(result);
 
