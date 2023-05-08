@@ -103,14 +103,7 @@ const Modal = () => {
           <div className="footer">
             <br></br>
             <br></br>
-            <button class="btn btn-outline-light py-3 px-5 mt-2"
-              onClick={() => {
-                setModalOpen(false);
-              }}
-              id="cancelBtn" 
-            >
-              Cancel
-            </button>
+            
             <button onClick={() => sharing()} class="btn btn-outline-light py-3 px-5 mt-2">Share</button>
           </div>
         </div>

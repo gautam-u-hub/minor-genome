@@ -67,7 +67,7 @@ const Display = () => {
       console.log(str_array);
       // console.log(str);
       // console.log(str_array);
-      const images = str_array.map((item, i) => {
+      const Files = str_array.map((item, i) => {
         return (
           <ul>
             <a
@@ -80,9 +80,9 @@ const Display = () => {
           </ul>
         );
       });
-      setData2(images);
+      setData2(Files);
     } else {
-      alert("No image to display");
+      alert("No Files to display");
     }
   };
   const getYourData = async () => {
@@ -100,7 +100,7 @@ const Display = () => {
       console.log(str_array);
       // console.log(str);
       // console.log(str_array);
-      const images = str_array.map((item, i) => {
+      const Files = str_array.map((item, i) => {
         return (
           <ul>
             <a
@@ -113,9 +113,9 @@ const Display = () => {
           </ul>
         );
       });
-      setData(images);
+      setData(Files);
     } else {
-      alert("No image to display");
+      alert("No Files to display");
     }
   };
   return (
@@ -145,7 +145,7 @@ const Display = () => {
                   class="btn btn-outline-light py-3 px-5 mt-2"
                 >
                   {" "}
-                  Get Data{" "}
+                  Get Your Data{" "}
                 </button>
                 <br></br> <br></br>
                 <div className="">{data}</div>
@@ -161,7 +161,7 @@ const Display = () => {
                   onClick={getdata}
                   class="btn btn-outline-light py-3 px-5 mt-2"
                 >
-                  Get other's Data
+                  Get other user's data
                 </button>
                 <div className="">{data2}</div>
               </div>

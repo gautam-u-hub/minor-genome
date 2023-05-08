@@ -69,11 +69,13 @@ const FileUpload = ({ contract, account, provider }) => {
   const [publicationStatus, setPublicationStatus] = useState({ referenceTitle: "", status: "" });
   const [contact, setContact] = useState({ firstName: "", lastName: "", email: "" });
   const [option, setOption] = useState('option1');
+  const REGISTER_URL = "http://localhost:3500/Submissions";
+  
 
 
 
-  const handleubmit = (event) => {
-    event.preventDefault();
+  const handleubmit = async (e) => {
+    e.preventDefault();
     // Handle form submission here
     console.log({
       researchDefinition,
@@ -81,9 +83,31 @@ const FileUpload = ({ contract, account, provider }) => {
       publicationStatus,
       contact,
     });
+
+        try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify({ researchDefinition, sequenceAuthors,publicationStatus,contact,visibility,submissionCategory,sequenceMoleculeType,sequencingTechnology }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        },
+      );
+      console.log(JSON.stringify(response));
+      
+      //clear state and controlled inputs
+      //need value attrib on inputs for this
+     
+    } catch (err) {
+          console.log(err);
+    }
   };
+
+  
+
+
   const [file1, setFile] = useState(null);
-  const [fileName, setFileName] = useState("No image selected");
+  const [fileName, setFileName] = useState("No File Selected");
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (file1) {
@@ -120,7 +144,7 @@ const FileUpload = ({ contract, account, provider }) => {
         const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
         const signer = contract.connect(provider.getSigner());
         signer.add(account, ImgHash);
-        alert("Successfully Image Uploaded");
+        alert("File Successfully Uploaded");
       } catch (error) {
         console.log(error);
       }
@@ -149,206 +173,337 @@ const FileUpload = ({ contract, account, provider }) => {
     setOption(event.target.value);
   };
   return (
-
-
-    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s"> 
+    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
       <div class="container">
         <div class="booking p-5">
           <div class="row g-5 align-items-center">
-            <div class="col-md-6 text-white" style={{marginLeft:"6.5cm"}}>
-            <h6 class="text-white text-uppercase">Enter Genomic Sequence</h6>
-            <div>
+            <div class="col-md-6 text-white" style={{ marginLeft: "6.5cm" }}>
+              <h6 class="text-white text-uppercase">Enter Genomic Sequence</h6>
               <div>
-              <div class="container-fluid position-relative p-0">
-              
-        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-       
-                <label htmlFor="option">Select an option:</label>
-                <select id="option" class="btn btn-outline-light w-100 py-3" name="option" value={option} onChange={handleOptionChange}>
-                  <option value="visibility">visibility</option>
-                 <option value="submission category">submission category</option>
-                  <option value="submission release date">submission release date</option>
-                  <option value="sequenceMoleculeType">sequence Molecule Type</option>
-                  <option value="sequencingTechnology">sequencingTechnology</option>
-                  <option value="Research definition">Research definition</option>
-                  <option value="Sequence authors">Sequence authors</option>
-                  <option value="Publication status">Publication status</option>
-                  <option value="Contact">Contact</option>
-                
-                </select>
-                </nav>
-              
-              </div>
-              </div>
-              
-
-              <div className="row g-3">
-                <div className="top">
-
-                  <form className="form" onSubmit={handleSubmit}>
-                    <label htmlFor="file-upload" className="choose" class="btn btn-outline-light w-100 py-3">
-
-                      Choose File
-                    </label>
-                    <input
-                      disabled={!account}
-                      type="file"
-                      id="file-upload"
-                      name="data"
-                      onChange={retrieveFile}
-                    />
-                    <span className="textArea"class="text-light">Image: {fileName}</span>
-                    <button type="submit" className="upload" disabled={!file1} class="btn btn-outline-light py-3 px-5 mt-2" >
-                      Upload File
-                    </button>
-                  </form>
-                  <form onSubmit={handleubmit}>
-                    {option === 'visibility' && (
-                      <div>
-                        <label htmlFor="visibility">Visibility</label>
-                        <select class="form-control bg-light" id="visibility" value={visibility} onChange={(event) => setVisibility(event.target.value)}>
-                          <option value  ="public">Public</option>
-                          <option value="private">Private</option>
-                        </select>
-                      </div>
-                    )}
-                    {option === 'submission category' && (
-                      <div>
-                           <div class="col-md-6">
-                          
-                        <label>Submission category</label>
-                        <div>
-                          <label htmlFor="sequencedBySubmitter">
-                            <input type="radio" id="sequencedBySubmitter" name="submissionCategory" value="sequenced by submitter" checked={submissionCategory === 'sequenced by submitter'} onChange={(event) => setSubmissionCategory(event.target.value)} />
-                            Sequenced by submitter
-                          </label>
-                        </div>
-                        <div>
-                          <label htmlFor="derivedFromOtherData">
-                            <input type="radio" id="derivedFromOtherData" name="submissionCategory" value="derived from other data" checked={submissionCategory === 'derived from other data'} onChange={(event) => setSubmissionCategory(event.target.value)} />
-                            Derived from other data
-                          </label>
-                        </div>
-                      </div>
-                      </div>
-                      
-
-                    )}
-
-
-                    {option === 'submission release date' && (
-                      <div>
-                         <div class="col-md-6">
-                         
-                        <label  class="form-control bg-light"htmlFor="submissionReleaseDate">Submission release date</label>
-                        <input type="date" id="submissionReleaseDate" value={submissionReleaseDate} onChange={(event) => setSubmissionReleaseDate(event.target.value)} />
-                        </div>
-                        
-                      </div>)}
-
-                    {option === 'sequenceMoleculeType' && (
-                      <div>
-                        <div class="col-md-6">
-                         
-                            <div class="form-control bg-light">
-                          <label class="form-control bg-light" htmlFor="sequenceMoleculeType">Sequence (molecule type, topology)</label>
-                          <input type="text" id="sequenceMoleculeType"class="form-control bg-light" value={sequenceMoleculeType} onChange={(event) => setSequenceMoleculeType(event.target.value)} />
-                          </div>
-                          </div>
-                        
-                      </div>
-
-                    )}
-
-                    {option === 'sequencingTechnology' && (
-                      <div>
-                        <label class="form-control bg-light" htmlFor="sequencingTechnology">Sequencing technology</label>
-                        <input type="text" class="form-control bg-light" id="sequencingTechnology" value={sequencingTechnology} onChange={(event) => setSequencingTechnology(event.target.value)} />
-                      </div>
-                    )}
-
-                    {option == ' Research definition' && (
-                      <label>
-                        Research definition
-                        <input type="text" class="form-control bg-light" value={researchDefinition} onChange={(event) => setResearchDefinition(event.target.value)} />
-                      </label>
-                    )}
-                    {option == 'Sequence authors' && (
-                      <label>
-                        Sequence authors (first name, last name)
-                        <input
-                          type="text" class="form-control bg-light"
-                          value={sequenceAuthors.firstName}
-                          onChange={(event) => setSequenceAuthors((prevState) => ({ ...prevState, firstName: event.target.value }))}
-                          placeholder="First Name"
-                        />
-                        <input
-                          type="text"class="form-control bg-light"
-                          value={sequenceAuthors.lastName}
-                          onChange={(event) => setSequenceAuthors((prevState) => ({ ...prevState, lastName: event.target.value }))}
-                          placeholder="Last Name"
-                        />
-                      </label>
-                    )}
-                    {option == 'Publication status' && (
-                      <label>
-                        Publication status (reference title, status)
-                        <input
-                          type="text" class="form-control bg-light"
-                          value={publicationStatus.referenceTitle}
-                          onChange={(event) =>
-                            setPublicationStatus((prevState) => ({ ...prevState, referenceTitle: event.target.value }))
-                          }
-                          placeholder="Reference Title"
-                        />
-                        <input
-                          type="text" class="form-control bg-light"
-                          value={publicationStatus.status}
-                          onChange={(event) => setPublicationStatus((prevState) => ({ ...prevState, status: event.target.value }))}
-                          placeholder="Status"
-                        />
-                      </label>)}
-                    {option == 'Contact' && (
-                      <label>
-                        Contact (first name, last name, email)
-                        <input
-                          type="text" class="form-control bg-light"
-                          value={contact.firstName}
-                          onChange={(event) => setContact((prevState) => ({ ...prevState, firstName: event.target.value }))}
-                          placeholder="First Name"
-                        />
-                        <input
-                          type="text" class="form-control bg-light"
-                          value={contact.lastName}
-                          onChange={(event) => setContact((prevState) => ({ ...prevState, lastName: event.target.value }))}
-                          placeholder="Last Name"
-                        />
-                        <input
-                          type="text" class="form-control bg-light"
-                          value={contact.email}
-                          onChange={(event) => setContact((prevState) => ({ ...prevState, email: event.target.value }))}
-                          placeholder="Email"
-                        />
-                      </label>
-                    )}
-
-                    <button type="submit"class="btn btn-outline-light w-100 py-3" >Submit</button>
-
-
-
-
-
-                  </form>
+                <div>
+                  <div class="container-fluid position-relative p-0">
+                    <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                      <label htmlFor="option">Select an option:</label>
+                      <select
+                        id="option"
+                        class="btn btn-outline-light w-100 py-3"
+                        name="option"
+                        value={option}
+                        onChange={handleOptionChange}
+                      >
+                        <option > select </option>
+                        <option value="visibility">visibility</option>
+                        <option value="submission category">
+                          submission category
+                        </option>
+                        <option value="submission release date">
+                          submission release date
+                        </option>
+                        <option value="sequenceMoleculeType">
+                          sequence Molecule Type
+                        </option>
+                        <option value="sequencingTechnology">
+                          sequencingTechnology
+                        </option>
+                        <option value="Research definition">
+                          Research definition
+                        </option>
+                        <option value="Sequence authors">
+                          Sequence authors
+                        </option>
+                        <option value="Publication status">
+                          Publication status
+                        </option>
+                        <option value="Contact">Contact</option>
+                      </select>
+                    </nav>
+                  </div>
                 </div>
 
+                <div className="row g-3">
+                  <div className="top">
+                    <form className="form" onSubmit={handleSubmit}>
+                      <label
+                        htmlFor="file-upload"
+                        className="choose"
+                        class="btn btn-outline-light w-100 py-3"
+                      >
+                        Choose File
+                      </label>
+                      <input
+                        disabled={!account}
+                        type="file"
+                        id="file-upload"
+                        name="data"
+                        onChange={retrieveFile}
+                      />
+                      <span className="textArea" class="text-light">
+                        File: {fileName}
+                      </span>
+                      <button
+                        type="submit"
+                        className="upload"
+                        disabled={!file1}
+                        class="btn btn-outline-light py-3 px-5 mt-2"
+                      >
+                        Upload File
+                      </button>
+                      <br></br>
+                    </form>
+                    <form onSubmit={handleubmit}>
+                      {option === "visibility" && (
+                        <div>
+                          <label htmlFor="visibility">Visibility</label>
+                          <select
+                            class="form-control bg-light"
+                            id="visibility"
+                            value={visibility}
+                            onChange={(event) =>
+                              setVisibility(event.target.value)
+                            }
+                          >
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                          </select>
+                        </div>
+                      )}
+                      {option === "submission category" && (
+                        <div>
+                          <div class="col-md-6">
+                            <label>Submission category</label>
+                            <div>
+                              <label htmlFor="sequencedBySubmitter">
+                                <input
+                                  type="radio"
+                                  id="sequencedBySubmitter"
+                                  name="submissionCategory"
+                                  value="sequenced by submitter"
+                                  checked={
+                                    submissionCategory ===
+                                    "sequenced by submitter"
+                                  }
+                                  onChange={(event) =>
+                                    setSubmissionCategory(event.target.value)
+                                  }
+                                />
+                                Sequenced by submitter
+                              </label>
+                            </div>
+                            <div>
+                              <label htmlFor="derivedFromOtherData">
+                                <input
+                                  type="radio"
+                                  id="derivedFromOtherData"
+                                  name="submissionCategory"
+                                  value="derived from other data"
+                                  checked={
+                                    submissionCategory ===
+                                    "derived from other data"
+                                  }
+                                  onChange={(event) =>
+                                    setSubmissionCategory(event.target.value)
+                                  }
+                                />
+                                Derived from other data
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {option === "submission release date" && (
+                        <div>
+                          <div class="col-md-6">
+                            <label
+                              class="form-control bg-light"
+                              htmlFor="submissionReleaseDate"
+                            >
+                              Submission release date
+                            </label>
+                            <input
+                              type="date"
+                              id="submissionReleaseDate"
+                              value={submissionReleaseDate}
+                              onChange={(event) =>
+                                setSubmissionReleaseDate(event.target.value)
+                              }
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {option === "sequenceMoleculeType" && (
+                        <div>
+                          <div class="col-md-6">
+                            <div class="form-control bg-light">
+                              <label
+                                class="form-control bg-light"
+                                htmlFor="sequenceMoleculeType"
+                              >
+                                Sequence (molecule type, topology)
+                              </label>
+                              <input
+                                type="text"
+                                id="sequenceMoleculeType"
+                                class="form-control bg-light"
+                                value={sequenceMoleculeType}
+                                onChange={(event) =>
+                                  setSequenceMoleculeType(event.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {option === "sequencingTechnology" && (
+                        <div>
+                          <label
+                            class="form-control bg-light"
+                            htmlFor="sequencingTechnology"
+                          >
+                            Sequencing technology
+                          </label>
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            id="sequencingTechnology"
+                            value={sequencingTechnology}
+                            onChange={(event) =>
+                              setSequencingTechnology(event.target.value)
+                            }
+                          />
+                        </div>
+                      )}
+
+                      {option == "Research definition" && (
+                        <label>
+                          Research definition
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={researchDefinition}
+                            onChange={(event) =>
+                              setResearchDefinition(event.target.value)
+                            }
+                          />
+                        </label>
+                      )}
+                      {option == "Sequence authors" && (
+                        <label>
+                          Sequence authors (first name, last name)
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={sequenceAuthors.firstName}
+                            onChange={(event) =>
+                              setSequenceAuthors((prevState) => ({
+                                ...prevState,
+                                firstName: event.target.value,
+                              }))
+                            }
+                            placeholder="First Name"
+                          />
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={sequenceAuthors.lastName}
+                            onChange={(event) =>
+                              setSequenceAuthors((prevState) => ({
+                                ...prevState,
+                                lastName: event.target.value,
+                              }))
+                            }
+                            placeholder="Last Name"
+                          />
+                        </label>
+                      )}
+                      {option == "Publication status" && (
+                        <label>
+                          Publication status (reference title, status)
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={publicationStatus.referenceTitle}
+                            onChange={(event) =>
+                              setPublicationStatus((prevState) => ({
+                                ...prevState,
+                                referenceTitle: event.target.value,
+                              }))
+                            }
+                            placeholder="Reference Title"
+                          />
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={publicationStatus.status}
+                            onChange={(event) =>
+                              setPublicationStatus((prevState) => ({
+                                ...prevState,
+                                status: event.target.value,
+                              }))
+                            }
+                            placeholder="Status"
+                          />
+                        </label>
+                      )}
+                      {option == "Contact" && (
+                        <label>
+                          Contact (first name, last name, email)
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={contact.firstName}
+                            onChange={(event) =>
+                              setContact((prevState) => ({
+                                ...prevState,
+                                firstName: event.target.value,
+                              }))
+                            }
+                            placeholder="First Name"
+                          />
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={contact.lastName}
+                            onChange={(event) =>
+                              setContact((prevState) => ({
+                                ...prevState,
+                                lastName: event.target.value,
+                              }))
+                            }
+                            placeholder="Last Name"
+                          />
+                          <input
+                            type="text"
+                            class="form-control bg-light"
+                            value={contact.email}
+                            onChange={(event) =>
+                              setContact((prevState) => ({
+                                ...prevState,
+                                email: event.target.value,
+                              }))
+                            }
+                            placeholder="Email"
+                          />
+                        </label>
+                      )}
+
+                      <button
+                        type="submit"
+                        class="btn btn-outline-light w-100 py-3"
+                      >
+                        Submit
+                      </button>
+                    </form>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      </div>
-      </div>
-    
+    </div>
   );
 };
 export default FileUpload;

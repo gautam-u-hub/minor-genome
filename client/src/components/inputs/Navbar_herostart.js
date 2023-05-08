@@ -32,45 +32,40 @@ const Navbar_herostart = () => {
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
               <div class="navbar-nav ms-auto py-0">
-                <div class="nav-item dropdown"  >
-                
-                  
-                  
+                <div class="nav-item dropdown">
                   {username ? (
-              <>
-                <Link to ="/logout"style={{marginRight:'2cm'}}>
-                  Logout
-                </Link>
-               
-                <Link to  ="/Upload"style={{marginRight:'2cm'}}>
-                  Upload Fasta{" "}
-                </Link>
-             
-                <Link  to="/Get"style={{marginRight:'2cm'}}>
-                  Dashboard{" "}
-                </Link>
-                <Link  to="/Share">
-                  Share
-                </Link>
-              </>
-            ) : (
-              <>
-                <a  href="/login">
-                  Login
-                </a>
-                <br />
-                <a  href="/register">
-                  Register
-                </a>
-                <br />
-              </>
-            )}
+                    <>
+                      <Link to="/logout" style={{ marginRight: "2cm" }}>
+                        Logout
+                      </Link>
 
+                      <Link to="/Upload" style={{ marginRight: "2cm" }}>
+                        Upload Fasta{" "}
+                      </Link>
 
-</div>
+                      <Link to="/Get" style={{ marginRight: "2cm" }}>
+                        Dashboard({username})
+                      </Link>
+                      <Link to="/Share">Share</Link>
+                    </>
+                  ) : (
+                    <>
+                      <a href="/login" style={{ marginRight: "2cm" }}>
+                        Login
+                      </a>
+                      <br />
+                      <a href="/register" style={{ marginRight: "2cm" }}>
+                        Register
+                      </a>
 
-
-             
+                      <br />
+                      <Link to="/Upload" style={{ marginRight: "2cm" }}>
+                        Upload Fasta{" "}
+                      </Link>
+                      
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </nav>
@@ -90,7 +85,6 @@ const Navbar_herostart = () => {
             </div>
           </div>
         </div>
-        
       </>
     );
 }

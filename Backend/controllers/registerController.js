@@ -4,10 +4,11 @@ const bcrypt = require('bcrypt');
 const handleNewUser = async (req, res) => {
     const { user, pwd } = req.body;
     if (!user || !pwd) return res.status(400).json({ 'message': 'Username and password are required.' });
-
+    //console.log(user);
     // check for duplicate usernames in the db
     const duplicate = await User.findOne({ username: user }).exec();
-    if (duplicate) return res.sendStatus(409); //Conflict 
+    if (duplicate) return res.sendStatus(409); //Conflict
+    
 
     try {
         //encrypt the password

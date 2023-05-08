@@ -15,7 +15,7 @@ const REGISTER_URL = "/register";
 const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
-
+  
   const [user, setUser] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
@@ -89,12 +89,22 @@ const Register = () => {
 
   return (
     <>
- 
       {success ? (
         <section className="reg">
           <h1>Success!</h1>
-          <p>
-            <a href="#">Sign In</a>
+          <p
+            style={{
+              color: "black",
+            }}
+          >
+            <a
+              style={{
+                color: "black",
+              }}
+              href="/login"
+            >
+              Sign In
+            </a>
           </p>
         </section>
       ) : (
@@ -106,12 +116,16 @@ const Register = () => {
           >
             {errMsg}
           </p>
-          
+
           <h1>Register</h1>
           <form className="regForm" onSubmit={handleSubmit}>
             <label className="regLabel" htmlFor="username">
-            <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-              Username:</div>
+              <div
+                class="container-xxl py-5 wow fadeInUp"
+                data-wow-delay="0.1s"
+              >
+                Username:
+              </div>
               <FontAwesomeIcon
                 icon={faCheck}
                 className={validName ? "valid" : "hide"}
@@ -120,10 +134,8 @@ const Register = () => {
                 icon={faTimes}
                 className={validName || !user ? "hide" : "invalid"}
               />
-              
             </label>
-            
-            
+
             <input
               className="regInput"
               type="text"
@@ -151,10 +163,8 @@ const Register = () => {
               <br />
               Letters, numbers, underscores, hyphens allowed.
             </p>
-            
 
             <label className="regLabel" htmlFor="password">
-              
               Password:
               <FontAwesomeIcon
                 icon={faCheck}
@@ -235,7 +245,7 @@ const Register = () => {
               Sign Up
             </button>
           </form>
-            <p style={{color:"black"}}>
+          <p style={{ color: "black" }}>
             Already registered?
             <br />
             <span className="line">
@@ -244,11 +254,8 @@ const Register = () => {
                 Sign In
               </a>
             </span>
-            
           </p>
-          
         </section>
-        
       )}
     </>
   );
